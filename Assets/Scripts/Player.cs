@@ -17,11 +17,13 @@ public class Player : MonoBehaviour
     bool _isHorizontalMove;
     Vector3 _vecDir;
     GameObject _scanObject;
+    GameManager _gMgr;
 
     // Start is called before the first frame update
     void Start()
     {
         _speed = 250.0f;
+        _gMgr = FindObjectOfType<GameManager>();
         _rigid = GetComponent<Rigidbody2D>();
         _ani   = GetComponent<Animator>();
     }
@@ -29,8 +31,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _h = Input.GetAxisRaw("Horizontal");
-        _v = Input.GetAxisRaw("Vertical");
+        _h = _gMgr._isAction ? 0 : Input.GetAxisRaw("Horizontal");
+        _v = _gMgr._isAction ? 0 : Input.GetAxisRaw("Vertical");
 
         UpdatePlayerAnimation();
         CheckHorizontalMove();
@@ -44,8 +46,11 @@ public class Player : MonoBehaviour
         if (_hDown && _h == -1)
             _vecDir = Vector3.left;
 
-        if (Input.GetButtonDown("Jump") && _scanObject != null )        // SPACE BAR
-            Debug.Log($"This is {_scanObject.name}");
+        if (Input.GetButtonDown("Jump") && _scanObject != null)     // SPACE BAR (유니티 edit-projectSettings-InputManager에서 세팅)
+        {
+            _gMgr.Action(_scanObject);
+            // Debug.Log($"This is {_scanObject.name}");
+        }   
     }
 
     void FixedUpdate()
@@ -57,10 +62,10 @@ public class Player : MonoBehaviour
 
     void CheckHorizontalMove()
     {   
-        _hDown = Input.GetButtonDown("Horizontal");
-        _vDown = Input.GetButtonDown("Vertical");
-        _hUp = Input.GetButtonUp("Horizontal");
-        _vUp = Input.GetButtonUp("Vertical");
+        _hDown = _gMgr._isAction ? false : Input.GetButtonDown("Horizontal");
+        _vDown = _gMgr._isAction ? false : Input.GetButtonDown("Vertical");
+        _hUp   = _gMgr._isAction ? false : Input.GetButtonUp("Horizontal");
+        _vUp   = _gMgr._isAction ? false : Input.GetButtonUp("Vertical");
 
         if (_hDown)
             _isHorizontalMove = true;

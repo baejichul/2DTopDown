@@ -22,8 +22,8 @@ public class TalkManager : MonoBehaviour
         // TalkData
         _talkData.Add(1000, new string[] { "안녕? 난 Ludo야:0", "이곳에 처음 왔구나?:1" });
         _talkData.Add(2000, new string[] { "여어? 난 Luna야:0", "넌 어디서 왔니?:1", "난 강남에서 왔어:2" });
-        _talkData.Add(100, new string[] {"평범한 나무상자다." });
-        _talkData.Add(200, new string[] {"누군가 사용했던 흔적이 있는 책상이다." });
+        _talkData.Add(3000, new string[] {"평범한 나무상자다." });
+        _talkData.Add(4000, new string[] {"누군가 사용했던 흔적이 있는 책상이다." });
 
 
         //Quest Talk
@@ -47,11 +47,19 @@ public class TalkManager : MonoBehaviour
 
     public string GetTalk(int id, int talkIndex)
     {
-
+        // Debug.Log($"id = {id}, talkIndex = {talkIndex} ");
+        if (!_talkData.ContainsKey(id))
+        {
+            if(!_talkData.ContainsKey(id - id %10))
+                return GetTalk(id - id % 100, talkIndex);
+            else
+                return GetTalk(id - id % 10, talkIndex);
+        }
+        
         if (talkIndex == _talkData[id].Length)
             return null;
         else
-        return _talkData[id][talkIndex];
+            return _talkData[id][talkIndex];
     }
 
 

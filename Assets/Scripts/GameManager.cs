@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
         _canvas   = GameObject.FindGameObjectWithTag("Canvas");
         _dialog   = _canvas.transform.Find("Dialog").gameObject;
         _talkText = _canvas.transform.Find("Dialog").Find("Image").Find("Text").GetComponent<Text>();
+
+        Debug.Log ( _questManager.CheckQuest() );
     }
 
     // Update is called once per frame

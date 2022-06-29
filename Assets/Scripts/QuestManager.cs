@@ -33,11 +33,18 @@ public class QuestManager : MonoBehaviour
     {
         _questList.Add(10, new QuestData("마을 사람과 대화", new int[] {1000, 2000 }));
         _questList.Add(20, new QuestData("루도의 동전찾아주기", new int[] { 5000, 2000 }));
+        _questList.Add(30, new QuestData("퀘스트 클리어", new int[] { 0 }));
     }
 
     public int GetQuestTalkIndex(int id)
     {
         return _questId + _questActionIndex;
+    }
+
+    public string CheckQuest()
+    {   
+        // Quest Name
+        return _questList[_questId]._questName;
     }
 
     public string CheckQuest(int id)

@@ -8,8 +8,8 @@ public class GameManager : MonoBehaviour
     public TalkManager _talkManager;
     public QuestManager _questManager;
     public GameObject _canvas;
-    public GameObject _dialog;
-    public Text _talkText;
+    public Animator _dialog;
+    public TypeEffect _talkText;
     public GameObject _scanObject;
     public bool _isAction;
     public int _talkIndex;
@@ -19,10 +19,11 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         _canvas   = GameObject.FindGameObjectWithTag("Canvas");
-        _dialog   = _canvas.transform.Find("Dialog").gameObject;
-        _talkText = _canvas.transform.Find("Dialog").Find("Image").Find("Text").GetComponent<Text>();
+        _dialog   = _canvas.transform.Find("Dialog").gameObject.GetComponent<Animator>();
+        // _talkText = _canvas.transform.Find("Dialog").Find("Image").Find("Text").GetComponent<Text>();
+        _talkText = _canvas.transform.Find("Dialog").Find("Image").Find("Text").GetComponent<TypeEffect>();
 
-        Debug.Log ( _questManager.CheckQuest() );
+        // Debug.Log ( _questManager.CheckQuest() );
     }
 
     // Update is called once per frame
@@ -38,16 +39,23 @@ public class GameManager : MonoBehaviour
         // _talkText.text = "이것의 이름은 " + scanObj.name + " 입니다.";
         ObjectData objData = _scanObject.GetComponent<ObjectData>();
         Talk(objData._id, objData._isNpc);
-        
 
-        _dialog.SetActive(_isAction);
+        _dialog.SetBool("isShow", _isAction);
     }
 
     void Talk(int id, bool isNpc)
     {
         // Set Talk Data
-        int _questTalkIndex = _questManager.GetQuestTalkIndex(id);
-        string talkData = _talkManager.GetTalk(id + _questTalkIndex, _talkIndex);
+        int _questTalkIndex = 0;
+        string talkData = "";
+
+        if (_talkText.is_Animation)
+            _talkText.SetMsg("");
+        else
+        {
+            _questTalkIndex = _questManager.GetQuestTalkIndex(id);
+            talkData = _talkManager.GetTalk(id + _questTalkIndex, _talkIndex);
+        }
 
         // End Talk
         if (talkData == null)
@@ -61,7 +69,7 @@ public class GameManager : MonoBehaviour
         // Continue Talk
         if (isNpc)
         {
-            _talkText.text = talkData.Split(':')[0];
+            _talkText.SetMsg(talkData.Split(':')[0]);
 
             // Show Portrait
             _portraitImg.sprite = _talkManager.GetPortrait(id, int.Parse(talkData.Split(':')[1]));
@@ -69,7 +77,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            _talkText.text = talkData;
+            _talkText.SetMsg(talkData);
             _portraitImg.color = new Color(1, 1, 1, 0);
         }
 

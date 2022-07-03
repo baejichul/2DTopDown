@@ -50,10 +50,16 @@ public class TalkManager : MonoBehaviour
         // Debug.Log($"id = {id}, talkIndex = {talkIndex} ");
         if (!_talkData.ContainsKey(id))
         {
-            if(!_talkData.ContainsKey(id - id %10))
-                return GetTalk(id - id % 100, talkIndex);
+            if(!_talkData.ContainsKey(id - id % 10))
+            {
+                // 퀘스트 맨처음 대사 없을때
+                // 기본 대사를 가지고 온다
+                return GetTalk(id - id % 100, talkIndex);  // Get First Talk
+            }
             else
-                return GetTalk(id - id % 10, talkIndex);
+            {
+                return GetTalk(id - id % 10, talkIndex);   // Get First Quest Talk
+            }
         }
         
         if (talkIndex == _talkData[id].Length)
